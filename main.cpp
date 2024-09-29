@@ -174,13 +174,8 @@ void update()
     float cos = glm::cos(theta);
     float sin = glm::sin(theta);
 
-    glm::vec3 translation_vector_1 = glm::vec3(cos, sin, 0.0f);
-    glm::vec3 translation_vector_2 = glm::vec3(-cos * 0.5, -sin * 0.5, 0.0f);
+    glm::vec3 translation_vector_1 = glm::vec3(cos * 1.25, sin * 1.25, 0.0f);
     glm::vec3 scale_vector = glm::vec3((cos * cos) + 1, (cos * cos) + 1, 0.0f);
-
-    ///* Model matrix reset */
-    g_blade_one_matrix = glm::mat4(1.0f);
-    g_blade_two_matrix = glm::mat4(1.0f);
 
     /* Delta time calculations */
     float ticks = (float)SDL_GetTicks() / MILLISECONDS_IN_SECOND;
@@ -191,19 +186,27 @@ void update()
     g_rotation_blade_one.y += ROT_INCREMENT * delta_time + 0.1f;
     g_rotation_blade_two.y += ROT_INCREMENT * delta_time + 0.1f;
 
+
     // Beyblade One Transformations
-    g_blade_one_matrix = glm::scale(g_blade_one_matrix, scale_vector);
+    g_blade_one_matrix = glm::mat4(1.0f);
+    g_blade_one_matrix = glm::scale(g_blade_one_matrix, INIT_SCALE);
     g_blade_one_matrix = glm::translate(g_blade_one_matrix, translation_vector_1);
+
+
+    // Beyblade Two Transformations
+    g_blade_two_matrix = glm::mat4(1.0f);
+    g_blade_two_matrix = glm::scale(g_blade_two_matrix, scale_vector);
+    g_blade_two_matrix = glm::translate(g_blade_one_matrix * g_blade_two_matrix, translation_vector_1);
+
+    // Beyblade Rotations
     g_blade_one_matrix = glm::rotate(g_blade_one_matrix,
         g_rotation_blade_one.y,
         glm::vec3(0.0f, 0.0f, 1.0f));
 
-    // Beyblade Two Transformations
-    g_blade_two_matrix = glm::scale(g_blade_two_matrix, INIT_SCALE);
-    g_blade_two_matrix = glm::translate(g_blade_two_matrix, translation_vector_2);
     g_blade_two_matrix = glm::rotate(g_blade_two_matrix,
         g_rotation_blade_two.y,
         glm::vec3(0.0f, 0.0f, 1.0f));
+
 }
 
 
